@@ -883,7 +883,7 @@ body.ready .stagger > *:nth-child(n+9){animation-delay:.42s}
 
   /* ── 노래: mp3=소리 / 유튜브=숨겨서 소리만 / 그 외 링크=새 탭 ── */
   var SONG_AUTOPLAY = false;  /* 임베드(iframe 속)에선 소리 자동재생이 브라우저 정책상 차단 → 음소거 폴백으로 "소리 안 남"이 됨. false로 두면 재생 버튼 클릭(유저 제스처)에 소리와 함께 재생됨 */
-  let songMode=null, ytPlayer=null, ytReady=false, ytWantToggle=false, ytTimer=null, songLink='', ytVid='', ytClickFailed=false;
+  let songMode=null, ytPlayer=null, ytReady=false, ytWantToggle=false, ytTimer=null, songLink='', ytVid='', ytClickFailed=false, ytErr=0;
   function showMuteHint(on){ const el=document.getElementById('muteHint'); if(el) el.hidden=!on; }
   function armUnmute(){
     function un(){
@@ -995,7 +995,7 @@ body.ready .stagger > *:nth-child(n+9){animation-delay:.42s}
             }
           },
           onError:function(e){
-            ytClickFailed=true;
+            ytErr=e.data; ytClickFailed=true;
             const ns=document.getElementById('npSub');
             if(ns) ns.textContent = (e.data===101||e.data===150)
               ? '이 영상은 소유자가 외부 재생을 막아놨어요 — 다른 영상으로 바꿔주세요'
@@ -1037,7 +1037,7 @@ body.ready .stagger > *:nth-child(n+9){animation-delay:.42s}
           if(s2!==1 && s2!==3 && window.self!==window.top){   /* 재생·버퍼링 아니면 진짜 실패 */
             ytClickFailed=true;
             const ns=document.getElementById('npSub');
-            if(ns) ns.textContent='여기선 재생이 막혀있어요 — 한 번 더 누르면 새 탭에서 열려요';
+            if(ns) ns.textContent='재생 실패 · 상태 '+s2+(ytErr?(' · 오류 '+ytErr):'')+' — 한 번 더 누르면 새 탭';
           }
         }, 1500);
       }
