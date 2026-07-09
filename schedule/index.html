@@ -13,7 +13,7 @@
     .cal-title { font-size:20px; font-weight:800; color:var(--text); }
     .cal-nav { width:38px; height:38px; border-radius:50%; border:1.5px solid var(--main-light); background:#fff; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:16px; color:var(--text-mid); transition:all .2s; }
     .cal-nav:hover { background:var(--main-light); }
-    .cal-grid { display:grid; grid-template-columns:repeat(7,1fr); }
+    .cal-grid { display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); }
     .cal-dow { padding:10px 4px; text-align:center; font-size:13px; font-weight:700; color:var(--main); }
     .cal-dow:first-child { color:#e05; } .cal-dow:last-child { color:#4a9; }
     .cal-cell { height:88px; border-top:1px solid var(--main-light); border-right:1px solid var(--main-light); padding:5px 5px 6px; position:relative; overflow:hidden; cursor:default; }
@@ -24,7 +24,6 @@
     
     .cal-cell.today .cal-date { background:var(--main); color:#fff; border-radius:50%; width:22px; height:22px; display:inline-flex; align-items:center; justify-content:center; }
     .hl-star { position:absolute; top:-10px; left:-9px; font-size:19px; transform:rotate(-14deg); filter:drop-shadow(0 2px 3px rgba(70,85,45,.4)); z-index:3; pointer-events:none; }
-    .off-tag { position:absolute; top:3px; right:7px; font-size:16px; font-weight:800; letter-spacing:2px; background:transparent !important; z-index:1; }
     .cal-cell.hl { overflow:visible; }
     .cal-cell.hasband { overflow:visible; }
     .band { position:relative; margin:3px -6px 0; height:20px; display:flex; align-items:center; justify-content:flex-start; font-size:10px; font-weight:600; z-index:1; }
@@ -196,7 +195,7 @@
       const isToday = today.getFullYear()===currentYear && today.getMonth()===currentMonth && today.getDate()===d;
       const events = evOn(dateStr);
       const hl = events.some(e=>e.highlight);
-      let fillCls = '', fillLabel = '', fillUsed = false, offTag = '';
+      let fillCls = '', fillLabel = '', fillUsed = false;
       const chips = [];
       events.forEach(e => {
         const k1 = kind(e.type);
@@ -218,7 +217,6 @@
           return;
         }
         if (k1==='off'){
-          if (!offTag) offTag = `<span class="off-tag ${cc(e.color, e.type)}">휴방</span>`;
           if (e.title && e.title !== '휴방')
             chips.push(`<div class="ev ${cc(e.color, e.type)}" title="${esc(e.title)}">${esc(e.title)}</div>`);
           if (e.time2 || e.title2){
@@ -239,7 +237,7 @@
       const evHtml = fillLabel + chips.join('');
       const cls = `cal-cell${isToday?' today':''}${events.length?' has':''}${hl?' hl':''}${fillCls}`;
       const click = events.length ? `onclick="openModal('${dateStr}')"` : '';
-      html += `<div class="${cls}" ${click}><span class="cal-date">${d}</span>${hl?'<span class="hl-star">⭐</span>':''}${offTag}${evHtml}</div>`;
+      html += `<div class="${cls}" ${click}><span class="cal-date">${d}</span>${hl?'<span class="hl-star">⭐</span>':''}${evHtml}</div>`;
     }
     const totalCells = startDay + last.getDate();
     const rem = totalCells % 7 === 0 ? 0 : 7 - (totalCells % 7);
