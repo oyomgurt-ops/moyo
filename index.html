@@ -994,6 +994,13 @@ body.ready .stagger > *:nth-child(n+9){animation-delay:.42s}
               }, 900);
             }
           },
+          onError:function(e){
+            ytClickFailed=true;
+            const ns=document.getElementById('npSub');
+            if(ns) ns.textContent = (e.data===101||e.data===150)
+              ? '이 영상은 소유자가 외부 재생을 막아놨어요 — 다른 영상으로 바꿔주세요'
+              : '영상을 불러올 수 없어요 — 링크를 확인해주세요';
+          },
           onStateChange:function(e){
             if(e.data===1){ playing(true); startYTProgress(); }
             else if(e.data===2){ playing(false); stopYTProgress(); }
