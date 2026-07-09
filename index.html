@@ -523,9 +523,11 @@ body.ready .stagger > *:nth-child(n+9){animation-delay:.42s}
 @media (min-width:961px) and (max-width:1120px){
   .player{padding-right:24px;}
   .vinyl,.pnote{display:none;}
-  .nav-row{gap:3px; justify-content:center;}
-  .ntab{padding:9px 9px; font-size:13px; gap:5px;}
-  .ntab svg{width:14px; height:14px;}
+  .nav-row{gap:0; justify-content:center; flex-wrap:nowrap;}
+  .ntab{padding:8px 5px; font-size:14px; gap:4px;}
+  .ntab svg{width:13px; height:13px;}
+  .days{gap:5px;}
+  .day{width:39px; height:39px; font-size:13px;}
 }
 @media (max-width:960px){
   body{padding:16px 10px 50px;}
@@ -880,7 +882,7 @@ body.ready .stagger > *:nth-child(n+9){animation-delay:.42s}
   }
 
   /* ── 노래: mp3=소리 / 유튜브=숨겨서 소리만 / 그 외 링크=새 탭 ── */
-  var SONG_AUTOPLAY = true;   /* 자동재생: 소리 시도 → 막히면 음소거 시작 → 첫 터치에 소리 ON */
+  var SONG_AUTOPLAY = false;  /* 임베드(iframe 속)에선 소리 자동재생이 브라우저 정책상 차단 → 음소거 폴백으로 "소리 안 남"이 됨. false로 두면 재생 버튼 클릭(유저 제스처)에 소리와 함께 재생됨 */
   let songMode=null, ytPlayer=null, ytReady=false, ytWantToggle=false, ytTimer=null, songLink='';
   function showMuteHint(on){ const el=document.getElementById('muteHint'); if(el) el.hidden=!on; }
   function armUnmute(){
