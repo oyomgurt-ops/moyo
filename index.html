@@ -519,10 +519,11 @@ body.ready .stagger > *:nth-child(8){animation-delay:.37s}
 body.ready .stagger > *:nth-child(n+9){animation-delay:.42s}
 
 /* ── 반응형 ── */
-/* 임베드/좁은 데스크탑(≈961–1120px): 레코드판 숨겨 곡명 확보 + nav 한 줄 유지 */
+/* 임베드/좁은 데스크탑(≈961–1120px): nav 압축 + 인용문 한 줄(칼럼 확보) + vinyl 유지(곡명은 마퀴가 처리) */
 @media (min-width:961px) and (max-width:1120px){
-  .player{padding-right:24px;}
-  .vinyl,.pnote{display:none;}
+  .hero-in{gap:36px; padding:0 48px;}
+  .hero-right{flex:0 0 150px;}
+  .h-quote{font-size:15px;}
   .nav-row{gap:4px 2px; justify-content:center; flex-wrap:wrap;}
   .ntab{padding:9px 14px; font-size:14.5px; gap:6px;}
   .ntab svg{width:16px; height:16px;}
