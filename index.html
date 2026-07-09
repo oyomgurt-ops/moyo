@@ -523,9 +523,9 @@ body.ready .stagger > *:nth-child(n+9){animation-delay:.42s}
 @media (min-width:961px) and (max-width:1120px){
   .player{padding-right:24px;}
   .vinyl,.pnote{display:none;}
-  .nav-row{gap:0; justify-content:center; flex-wrap:nowrap;}
-  .ntab{padding:8px 5px; font-size:14px; gap:4px;}
-  .ntab svg{width:13px; height:13px;}
+  .nav-row{gap:4px 2px; justify-content:center; flex-wrap:wrap;}
+  .ntab{padding:9px 14px; font-size:14.5px; gap:6px;}
+  .ntab svg{width:16px; height:16px;}
   .days{gap:5px;}
   .day{width:39px; height:39px; font-size:13px;}
 }
@@ -883,7 +883,7 @@ body.ready .stagger > *:nth-child(n+9){animation-delay:.42s}
 
   /* ── 노래: mp3=소리 / 유튜브=숨겨서 소리만 / 그 외 링크=새 탭 ── */
   var SONG_AUTOPLAY = false;  /* 임베드(iframe 속)에선 소리 자동재생이 브라우저 정책상 차단 → 음소거 폴백으로 "소리 안 남"이 됨. false로 두면 재생 버튼 클릭(유저 제스처)에 소리와 함께 재생됨 */
-  let songMode=null, ytPlayer=null, ytReady=false, ytWantToggle=false, ytTimer=null, songLink='';
+  let songMode=null, ytPlayer=null, ytReady=false, ytWantToggle=false, ytTimer=null, songLink='', ytVid='', ytBlocked=false;
   function showMuteHint(on){ const el=document.getElementById('muteHint'); if(el) el.hidden=!on; }
   function armUnmute(){
     function un(){
@@ -968,6 +968,7 @@ body.ready .stagger > *:nth-child(n+9){animation-delay:.42s}
     else { songMode='link'; songLink=raw; }
   }
   function setupYT(id){
+    ytVid=id;
     window.onYouTubeIframeAPIReady = function(){
       ytPlayer = new YT.Player('ytFrame', {
         videoId:id, playerVars:{playsinline:1,controls:0,disablekb:1,rel:0},
@@ -989,6 +990,9 @@ body.ready .stagger > *:nth-child(n+9){animation-delay:.42s}
                 if(ytPlayer.getPlayerState && ytPlayer.getPlayerState()!==1){
                   ytPlayer.mute(); ytPlayer.playVideo();
                   showMuteHint(true); armUnmute(); volIcon();
+                  setTimeout(function(){
+                    if(ytPlayer.getPlayerState && ytPlayer.getPlayerState()!==1 && window.self!==window.top) ytBlocked=true;
+                  }, 1200);
                 }
               }, 900);
             }
@@ -1016,7 +1020,22 @@ body.ready .stagger > *:nth-child(n+9){animation-delay:.42s}
   function stopYTProgress(){ if(ytTimer){ clearInterval(ytTimer); ytTimer=null; } }
   function toggleSong(){
     if(songMode==='audio'){ const a=document.getElementById('songAudio'); if(a.paused) a.play().catch(()=>{}); else a.pause(); }
-    else if(songMode==='yt'){ if(!ytReady){ ytWantToggle=true; return; } const st=ytPlayer.getPlayerState && ytPlayer.getPlayerState(); if(st===1) ytPlayer.pauseVideo(); else ytPlayer.playVideo(); }
+    else if(songMode==='yt'){
+      if(!ytReady){ ytWantToggle=true; return; }
+      if(ytBlocked && ytVid){ window.open('https://youtu.be/'+ytVid, '_blank'); return; }
+      const st=ytPlayer.getPlayerState && ytPlayer.getPlayerState();
+      if(st===1) ytPlayer.pauseVideo();
+      else {
+        ytPlayer.playVideo();
+        setTimeout(function(){
+          if(ytPlayer.getPlayerState && ytPlayer.getPlayerState()!==1 && window.self!==window.top){
+            ytBlocked=true;
+            const ns=document.getElementById('npSub');
+            if(ns) ns.textContent='숲 게시글에선 재생이 제한돼요 — 한 번 더 누르면 새 탭에서 열려요';
+          }
+        }, 1100);
+      }
+    }
     else if(songMode==='link'){ window.open(songLink,'_blank','noopener'); }
     else { const c=document.getElementById('songs-card'); if(c) c.scrollIntoView({behavior:'smooth',block:'center'}); }
   }
