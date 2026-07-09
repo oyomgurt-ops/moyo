@@ -656,11 +656,11 @@ body.ready .stagger > *:nth-child(n+9){animation-delay:.42s}
       <div class="p-art" id="pArt"><span>♪</span><img id="pArtImg" alt=""></div>
       <div class="p-info">
         <div class="p-eyebrow">♪ NOW PLAYING</div>
-        <div class="p-title" id="npTitle">숲의 노래</div>
+        <div class="p-title" id="npTitle">기쁨, 슬픔, 아름다운 마음 - AKMU</div>
         <div class="p-sub" id="npSub">모요 cover</div>
         <div class="p-barrow">
           <div class="p-bar"><span id="pBarFill"></span></div>
-          <span class="p-time" id="pTime">01:45 / 03:52</span>
+          <span class="p-time" id="pTime">00:00 / 04:37</span>
         </div>
         <div class="p-ctrl">
           <button type="button" aria-label="이전">◁</button>
@@ -757,7 +757,7 @@ body.ready .stagger > *:nth-child(n+9){animation-delay:.42s}
     'soop-id': 'duvl123',
     avatar: '', 'hero-bg': '',
     'hero-quote': '오늘도 작은 모험을 찾아 숲을 걷는 중',
-    'song-audio': 'https://youtu.be/_f9RFMBlrN4', 'song-title': '숲의 노래', 'song-sub': '모요 cover', 'song-art': '',
+    'song-audio': '/moyo_song.mp3', 'song-title': '기쁨, 슬픔, 아름다운 마음 - AKMU', 'song-sub': '모요 cover', 'song-art': '',
     'class-media': 'https://youtu.be/_f9RFMBlrN4',
     'hero-badges': 'FOREST ADVENTURER,GUILD MEMBER,LIVE',
     'sched-line1': '정규 방송 · 밤 10시', 'sched-line2': '휴방 · 쉬는 날엔 숲속 탐험!',
@@ -882,7 +882,7 @@ body.ready .stagger > *:nth-child(n+9){animation-delay:.42s}
   }
 
   /* ── 노래: mp3=소리 / 유튜브=숨겨서 소리만 / 그 외 링크=새 탭 ── */
-  var SONG_AUTOPLAY = false;  /* 임베드(iframe 속)에선 소리 자동재생이 브라우저 정책상 차단 → 음소거 폴백으로 "소리 안 남"이 됨. false로 두면 재생 버튼 클릭(유저 제스처)에 소리와 함께 재생됨 */
+  var SONG_AUTOPLAY = (window.self === window.top);   /* 직접 접속만 자동재생 · iframe(숲)은 클릭 대기 */  /* 임베드(iframe 속)에선 소리 자동재생이 브라우저 정책상 차단 → 음소거 폴백으로 "소리 안 남"이 됨. false로 두면 재생 버튼 클릭(유저 제스처)에 소리와 함께 재생됨 */
   let songMode=null, ytPlayer=null, ytReady=false, ytWantToggle=false, ytTimer=null, songLink='', ytVid='', ytClickFailed=false, ytErr=0;
   function showMuteHint(on){ const el=document.getElementById('muteHint'); if(el) el.hidden=!on; }
   function armUnmute(){
