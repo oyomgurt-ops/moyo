@@ -883,7 +883,7 @@ body.ready .stagger > *:nth-child(n+9){animation-delay:.42s}
 
   /* ── 노래: mp3=소리 / 유튜브=숨겨서 소리만 / 그 외 링크=새 탭 ── */
   var SONG_AUTOPLAY = false;  /* 임베드(iframe 속)에선 소리 자동재생이 브라우저 정책상 차단 → 음소거 폴백으로 "소리 안 남"이 됨. false로 두면 재생 버튼 클릭(유저 제스처)에 소리와 함께 재생됨 */
-  let songMode=null, ytPlayer=null, ytReady=false, ytWantToggle=false, ytTimer=null, songLink='', ytVid='', ytBlocked=false;
+  let songMode=null, ytPlayer=null, ytReady=false, ytWantToggle=false, ytTimer=null, songLink='', ytVid='', ytClickFailed=false;
   function showMuteHint(on){ const el=document.getElementById('muteHint'); if(el) el.hidden=!on; }
   function armUnmute(){
     function un(){
@@ -990,9 +990,6 @@ body.ready .stagger > *:nth-child(n+9){animation-delay:.42s}
                 if(ytPlayer.getPlayerState && ytPlayer.getPlayerState()!==1){
                   ytPlayer.mute(); ytPlayer.playVideo();
                   showMuteHint(true); armUnmute(); volIcon();
-                  setTimeout(function(){
-                    if(ytPlayer.getPlayerState && ytPlayer.getPlayerState()!==1 && window.self!==window.top) ytBlocked=true;
-                  }, 1200);
                 }
               }, 900);
             }
@@ -1022,18 +1019,20 @@ body.ready .stagger > *:nth-child(n+9){animation-delay:.42s}
     if(songMode==='audio'){ const a=document.getElementById('songAudio'); if(a.paused) a.play().catch(()=>{}); else a.pause(); }
     else if(songMode==='yt'){
       if(!ytReady){ ytWantToggle=true; return; }
-      if(ytBlocked && ytVid){ window.open('https://youtu.be/'+ytVid, '_blank'); return; }
+      if(ytClickFailed && ytVid){ window.open('https://youtu.be/'+ytVid, '_blank'); return; }
       const st=ytPlayer.getPlayerState && ytPlayer.getPlayerState();
-      if(st===1) ytPlayer.pauseVideo();
+      if(st===1 || st===3) ytPlayer.pauseVideo();
       else {
+        if(ytPlayer.isMuted && ytPlayer.isMuted() && getVol()>0) ytPlayer.unMute();
         ytPlayer.playVideo();
         setTimeout(function(){
-          if(ytPlayer.getPlayerState && ytPlayer.getPlayerState()!==1 && window.self!==window.top){
-            ytBlocked=true;
+          const s2=ytPlayer.getPlayerState && ytPlayer.getPlayerState();
+          if(s2!==1 && s2!==3 && window.self!==window.top){   /* 재생·버퍼링 아니면 진짜 실패 */
+            ytClickFailed=true;
             const ns=document.getElementById('npSub');
-            if(ns) ns.textContent='숲 게시글에선 재생이 제한돼요 — 한 번 더 누르면 새 탭에서 열려요';
+            if(ns) ns.textContent='여기선 재생이 막혀있어요 — 한 번 더 누르면 새 탭에서 열려요';
           }
-        }, 1100);
+        }, 1500);
       }
     }
     else if(songMode==='link'){ window.open(songLink,'_blank','noopener'); }
