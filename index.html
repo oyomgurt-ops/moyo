@@ -112,7 +112,7 @@ body{
 
 /* ── 히어로 (배경·프사 = 빈 슬롯) ── */
 .hero{
-  position:relative; height:470px; overflow:hidden;
+  position:relative; aspect-ratio:1600/625; min-height:360px; overflow:hidden;
   background:linear-gradient(180deg,#f1efd9 0%, #eef0d6 55%, #f5f3df 100%);
 }
 body.dark .hero{background:linear-gradient(180deg,#1c2213 0%, #1a2011 55%, #191e11 100%);}
@@ -519,10 +519,18 @@ body.ready .stagger > *:nth-child(8){animation-delay:.37s}
 body.ready .stagger > *:nth-child(n+9){animation-delay:.42s}
 
 /* ── 반응형 ── */
+/* 임베드/좁은 데스크탑(≈961–1120px): 레코드판 숨겨 곡명 확보 + nav 한 줄 유지 */
+@media (min-width:961px) and (max-width:1120px){
+  .player{padding-right:24px;}
+  .vinyl,.pnote{display:none;}
+  .nav-row{gap:3px; justify-content:center;}
+  .ntab{padding:9px 9px; font-size:13px; gap:5px;}
+  .ntab svg{width:14px; height:14px;}
+}
 @media (max-width:960px){
   body{padding:16px 10px 50px;}
   .sheet{border-radius:22px;}
-  .hero{height:auto; padding:40px 0 46px;}
+  .hero{aspect-ratio:auto; height:auto; padding:40px 0 46px;}
   .hero-in{flex-direction:column; gap:26px; padding:0 26px; text-align:center;}
   .hero-right{display:none;}
   .avatar{width:180px; height:180px; border-width:7px;}
