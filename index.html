@@ -830,7 +830,7 @@ body.ready .stagger > *:nth-child(n+9){animation-delay:.42s}
 
       /* 플레이어 */
       if ((d['song-title']||'').trim()) marquee('npTitle', d['song-title'].trim());
-      if ((d['song-sub']||'').trim())   marquee('npSub',   d['song-sub'].trim());
+      { const npS=(d['song-sub']||'').trim(), npSe=document.getElementById('npSub'); if (npS) marquee('npSub', npS); else if (npSe) npSe.textContent=''; } /* 빈 값 = 지움 (DB 성공 시) */
       if ((d['song-art']||'').trim()){
         const ai = document.getElementById('pArtImg');
         ai.src = d['song-art']; ai.style.display='block';
